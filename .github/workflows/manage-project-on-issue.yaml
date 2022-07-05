@@ -4,7 +4,7 @@ on:
     types: [opened]
 
 env:
-  PROJECT_OWNER: "@TryShippoOrg"
+  PROJECT_OWNER: "TryShippoOrg"
   PROJECT_NUMBER: 2
   GITHUB_TOKEN: ${{ secrets.ACCESS_ORG }}
 
