@@ -19,5 +19,5 @@ jobs:
           github-token: ${{ env.GITHUB_TOKEN  }}
           project-owner: ${{ env.PROJECT_OWNER }}
           project-number: ${{ env.PROJECT_NUMBER }}
-          issue-id: ${{ context.issue.number }}
+          issue-id: ${{ github.event.issue.node_id }}
 
