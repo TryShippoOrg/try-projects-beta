@@ -1,0 +1,43 @@
+name: GraphQLAPIを利用してProjectsにアクセスする
+
+on: workflow_dispatch
+
+env:
+  PAT: ${{{ secrets.ACCESS_ORG }}
+  PJ_NO: 2
+  ORG: "TryShippoOrg"
+
+jobs:
+  try_graphql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Projects data
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org) {
+                projectV2(number: $number) {
+                  id
+                   fields(first:20) {
+                    nodes {
+                      ... on ProjectV2Field {
+                        id
+                        name
+                      }
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORG -F number=$PJ_NO > project_data.json
+           
+           echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
+           echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
+           echo 'TODO_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="🆕 New") |.id' project_data.json) >> $GITHUB_ENV
