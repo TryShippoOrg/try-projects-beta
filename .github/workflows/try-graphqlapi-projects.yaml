@@ -3,7 +3,7 @@ name: GraphQLAPIを利用してProjectsにアクセスする
 on: workflow_dispatch
 
 env:
-  PAT: ${{{ secrets.ACCESS_ORG }}
+  PAT: ${{ secrets.ACCESS_ORG }}
   PJ_NO: 2
   ORG: "TryShippoOrg"
 
