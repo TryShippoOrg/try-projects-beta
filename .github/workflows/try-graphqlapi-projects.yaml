@@ -1,12 +1,13 @@
 name: GraphQLAPIを利用してProjectsにアクセスする
 
-on: workflow_dispatch
-
-
+on:
+  issues:
+    types: [unlabeled]
 
 jobs:
   try_graphql:
     runs-on: ubuntu-latest
+    if: (github.event.label.name == 'Triage')
     steps:
       - name: Fetch Projects data
         env:
@@ -42,3 +43,4 @@ jobs:
            echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
            echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
            echo 'TODO_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="🆕 New") |.id' project_data.json) >> $GITHUB_ENV
+           echo ${{ github.event.issues.id }}
